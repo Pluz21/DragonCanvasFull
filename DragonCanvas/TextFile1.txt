@@ -1,0 +1,72 @@
+void UProjectileTriggerComponent::HandleSnap(AActor* _actorToSnap)
+{
+    if (!snapManager || !isSpawner)
+    {
+        return;
+    }
+
+    AColorActivator* _vessel = Cast<AColorActivator>(GetOwner());
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), vesselToFind, allVessels);
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), spawnerToFind, allSpawners);
+
+    int _sizeAllVessels = allVessels.Num();
+    for (int i = 0; i < _sizeAllVessels; i++)
+    {
+        AColorActivator* _vesselRef = Cast<AColorActivator>(allVessels[i]);
+
+        // Check if the current vesselRef is the same as the owner of the component
+        if (_vesselRef == _vessel)
+        {
+            int _sizeAllSpawners = allSpawners.Num();
+            for (int j = 0; j < _sizeAllSpawners; j++)
+            {
+                AFireSpawner* _fireSpawnerRef = Cast<AFireSpawner>(allSpawners[j]);
+
+                if (_fireSpawnerRef)
+                {
+                    AActor* _spawnedEnemy = _fireSpawnerRef->Spawn();
+                    allSpawnedFromSnap.Add(_spawnedEnemy);
+                    UE_LOG(LogTemp, Error, TEXT("VesselRef->IsSpawner not found."));
+                }
+            }
+            // If you want to trigger only for the specific instance, you can break the loop here.
+            break;
+        }
+    }
+
+    isSpawner = false;
+}
+
+
+void UProjectileTriggerComponent::HandleSnap(AActor* _actorToSnap)
+{
+	if (!snapManager)return;
+	if(!isSpawner)
+	{
+		return;
+	}
+	AColorActivator* _vessel = Cast<AColorActivator>(GetOwner());
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), vesselToFind, allVessels);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), spawnerToFind, allSpawners);
+	int _sizeAllVessels = allVessels.Num();
+	for (int i = 0; i < _sizeAllVessels; i++)
+	{
+		AColorActivator* _vesselRef = Cast<AColorActivator>(allVessels[i]);
+		//if(_vessel)
+		int _sizeAllSpawners = allSpawners.Num();
+		for (int j = 0; j < _sizeAllSpawners; j++)
+		{
+
+			AFireSpawner* _fireSpawnerRef = Cast<AFireSpawner>(allSpawners[j]);
+		
+
+		if (_fireSpawnerRef)
+		{
+			AActor* _spawnedEnemy = _fireSpawnerRef->Spawn();
+			allSpawnedFromSnap.Add(_spawnedEnemy);
+			UE_LOG(LogTemp, Error, TEXT("VesselRef->IsSpawner not found."));
+
+		}
+		}
+
+	}
