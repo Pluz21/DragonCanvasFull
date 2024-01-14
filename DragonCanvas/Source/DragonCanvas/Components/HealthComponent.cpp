@@ -137,6 +137,7 @@ void UHealthComponent::HandleDeath()
 	ADragon* _playerRef = Cast<ADragon>(GetOwner());
 	_playerRef->SetCanUseMoveInputs(false);
 	//GetOwner()->DisableInput(nullptr);
+	
 	UE_LOG(LogTemp, Error, TEXT("Disable inputs"));
 
 }
