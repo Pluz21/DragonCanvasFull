@@ -54,7 +54,8 @@ public:
 	float GetManaRegenRate() { return manaRegenRate; }
 	UFUNCTION(BlueprintCallable)
 	void SetManaRegenRate(float _newRegenRate) { manaRegenRate = _newRegenRate; }
-
+	UFUNCTION(BlueprintCallable)
+	void SetProjectileManaCost(float _manaCost) { projectileManaCost = _manaCost; }
 	UFUNCTION(BlueprintCallable)
 	void SetOutOfMana();
 

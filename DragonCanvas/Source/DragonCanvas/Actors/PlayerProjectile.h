@@ -42,7 +42,7 @@ public:
 	// Sets default values for this actor's properties
 	APlayerProjectile();
 	
-
+	
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UMoveComponent> moveCompo;
@@ -107,6 +107,8 @@ public:
 	void SetCanMove(bool _value);
 	void SetForwardVector(const FVector& _ownerVector) { forwardVector = _ownerVector; }
 	void SetTargetLocation(const FVector& _newTargetLocation) { targetLocation = _newTargetLocation; }
+	void SetImpulseSpeed(float _newImpulseSpeed) { impulseSpeed = _newImpulseSpeed; }
+	
 	//void SetTargetLocation(const FVector& _targetLocation) { targetLocation = _targetLocation; }
 	UMoveComponent* GetMoveCompo() { return moveCompo; }
 	FVector GetInitialLocation() { return actorSpawnLocation; }

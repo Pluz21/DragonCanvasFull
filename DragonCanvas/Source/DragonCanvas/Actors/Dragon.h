@@ -63,7 +63,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<AProjectileManager> projectileManager;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USceneComponent> projectileSpawnPoint;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USceneComponent> gunSpawnPoint;
@@ -120,6 +120,8 @@ public:
 	// inputs Interactions
 	UPROPERTY(EditAnywhere, Category = "Inputs")
 	TObjectPtr<UInputAction> inputToAction;
+	UPROPERTY(EditAnywhere, Category = "Inputs")
+	TObjectPtr<UInputAction> inputToGrab;
 	UPROPERTY(EditAnywhere, Category = "Inputs")
 	TObjectPtr<UInputAction> inputToJump;
 	UPROPERTY(EditAnywhere, Category = "Inputs")
@@ -185,7 +187,14 @@ public:
 	float maxAmmo = 10.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float currentAmmo;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float attackSpeed = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float maxTimeAttackSpeed = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float currentTimeAttackSpeed = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool canAttack = true;
 
 	UPROPERTY(EditAnywhere, Category = "LineTrace")
 	FVector targetLocation;
@@ -242,6 +251,7 @@ protected:
 	void RotateYaw(const FInputActionValue& _value);
 	void RotatePitch(const FInputActionValue& _value);
 	void Action();
+	void Grab(const FInputActionValue& _value);
 	void ScrollUpSelectProjectile();
 	void ScrollDownSelectProjectile();
 	void Jump() override;
@@ -265,7 +275,9 @@ protected:
 
 public:
 
+	void SetProjectileSound(USoundBase* _newSound) { projectileSound = _newSound; }
 	UFUNCTION() void FireBreath();
+	
 	UFUNCTION() void AdjustProjectileSpeed(UStaticMeshComponent* _projectileMeshToAdjust);
 	FVector  GetSpawnLocation() { return projectileSpawnPoint->GetComponentLocation(); }
 	FVector GetProjectileTargetLocation() { return targetLocation; }
@@ -296,6 +308,8 @@ public:
 	TArray<UMaterialInterface*> GetAllProjectileMats() { return allProjectileMats; };
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int GetAllProjectileMatsSize() { return allProjectileMats.Num(); };
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FVector GetSpawnProjectileSocketLocation() { return projectileSpawnPoint->GetSocketLocation("projectileSpawnPoint"); }
 
 	virtual void Tick(float DeltaTime) override;
 
@@ -303,8 +317,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void UpdateMinDistanceToSelfDestruct();
 
-	void SetStartAlphaCount();
-	float IncreaseTime(float _current, float _max);
+	//void SetStartAlphaCount();
+	void SetAttackSpeed(float _newAttackSpeed) { attackSpeed = _newAttackSpeed; }
+	void IncreaseAttackRateTime();
 
 	// Gun functions
 	void AttachGun(AGun* _gunToAttach, USceneComponent* _attachPoint);

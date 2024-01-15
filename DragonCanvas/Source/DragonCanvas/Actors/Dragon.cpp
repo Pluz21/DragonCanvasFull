@@ -65,8 +65,8 @@ ADragon::ADragon()
 void ADragon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	DrawDebugSphere(GetWorld(), spawnPointLocation, 100, 12, FColor::Red);
-
+	//DrawDebugSphere(GetWorld(), spawnPointLocation, 100, 12, FColor::Red);
+	IncreaseAttackRateTime();
 }
 void ADragon::BeginPlay()
 {
@@ -91,7 +91,7 @@ void ADragon::Init()
 
 void ADragon::InitManagers()
 {
-	gameMode = GetWorld()->GetAuthGameMode<ACustomGameMode>(); // Grab game mode
+	gameMode = GetWorld()->GetAuthGameMode<ACustomGameMode>(); // Get game mode
 	if (!gameMode)return;
 	projectileManager = gameMode->GetProjectileManager();
 	if (!projectileManager)return;
@@ -201,6 +201,12 @@ void ADragon::Action()
 
 }
 
+void ADragon::Grab(const FInputActionValue& _value)
+{
+	if (!grabber)return;
+	grabber->Grab();
+}
+
 void ADragon::ScrollUpSelectProjectile()
 {
 	if (!canUseMoveInputs)return;
@@ -286,6 +292,7 @@ void ADragon::OpenMainMenu()
 
 void ADragon::FireBreath()
 {
+	if (!canAttack)return;
 	if (manaCompo->isOutOfMana || manaCompo->currentMana <= manaCompo->projectileManaCost)return;
 
 
@@ -313,6 +320,7 @@ void ADragon::FireBreath()
 	projectileManager->AddItem(_spawnedProjectile);
 
 	onProjectileShot.Broadcast();
+	canAttack = false;
 
 	
 
@@ -427,6 +435,8 @@ void ADragon::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	_myInputCompo->BindAction(inputToScrollUpSelectProjectile, ETriggerEvent::Triggered, this, &ADragon::ScrollUpSelectProjectile);
 	_myInputCompo->BindAction(inputToScrollDownSelectProjectile, ETriggerEvent::Triggered, this, &ADragon::ScrollDownSelectProjectile);
 	_myInputCompo->BindAction(inputToJump, ETriggerEvent::Triggered, this, &ADragon::Jump);
+	_myInputCompo->BindAction(inputToGrab, ETriggerEvent::Triggered, this, &ADragon::Grab);
+	_myInputCompo->BindAction(inputToGrab, ETriggerEvent::Canceled, this, &ADragon::Grab);
 	
 	_myInputCompo->BindAction(inputToOpenMenu, ETriggerEvent::Triggered, this, &ADragon::OpenMainMenu);
 
@@ -435,6 +445,19 @@ void ADragon::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ADragon::UpdateMinDistanceToSelfDestruct()
 {
 	minDistanceToSelfDestruct = coneTraceRadius / 2;
+}
+
+void ADragon::IncreaseAttackRateTime()
+{
+	if(!canAttack)
+	currentTimeAttackSpeed += GetWorld()->DeltaTimeSeconds;
+	UE_LOG(LogTemp, Warning, TEXT("currentTimeattackspeed =  %f"), currentTimeAttackSpeed);
+
+	if (currentTimeAttackSpeed * attackSpeed/100 >= maxTimeAttackSpeed)
+	{
+		canAttack = true;
+		currentTimeAttackSpeed = 0;
+	}
 }
 
 
