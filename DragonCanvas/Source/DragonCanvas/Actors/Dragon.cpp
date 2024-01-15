@@ -85,7 +85,6 @@ void ADragon::Init()
 	InitEvents();
 	InitGuns();
 	currentAmmo = maxAmmo;
-	UpdateMinDistanceToSelfDestruct();
 
 }
 
@@ -183,8 +182,8 @@ void ADragon::RotatePitch(const FInputActionValue& _value)
 	float _newPitch = FMath::Clamp(_currentRotation.Pitch + _rotateValue, minPitchRotation, maxPitchRotation);
 
 	// Set the new rotation for the SpringArm
-	FRotator _newArmRotation = FRotator(_newPitch, _currentRotation.Yaw, _currentRotation.Roll);
-	springArm->SetWorldRotation(_newArmRotation);
+	FRotator _newSpringArmRotation = FRotator(_newPitch, _currentRotation.Yaw, _currentRotation.Roll);
+	springArm->SetWorldRotation(_newSpringArmRotation);
 	//AddControllerPitchInput(-_rotateValue);
 	
 }
@@ -236,7 +235,7 @@ void ADragon::ScrollDownSelectProjectile()
 {
 	if (!canUseMoveInputs)return;
 
-	if (!allProjectileMats.IsValidIndex(currentProjectileIndex - 1))
+	if (!allProjectileMats.IsValidIndex(currentProjectileIndex - 1)) //checking if not valid might be dangerous
 	{
 		DebugText(TEXT("You are out of array by "), 1);
 		currentProjectileIndex = allProjectileMats.Num() - 1;
@@ -445,10 +444,6 @@ void ADragon::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ADragon::UpdateMinDistanceToSelfDestruct()
-{
-	minDistanceToSelfDestruct = coneTraceRadius / 2;
-}
 
 void ADragon::IncreaseAttackRateTime()
 {
