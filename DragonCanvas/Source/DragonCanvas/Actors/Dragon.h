@@ -22,7 +22,10 @@ class UAttackComponent;
 class UUpgradeComponent;
 
 class AGun;
+class ALaserGun;
+class ABaseGun;
 class AProjectileManager;
+class AGunManager;
 class APlayerProjectile;
 
 UCLASS()
@@ -62,6 +65,8 @@ public:
 	TObjectPtr<ACustomGameMode> gameMode;
 	UPROPERTY()
 	TObjectPtr<AProjectileManager> projectileManager;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AGunManager> gunManager = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USceneComponent> projectileSpawnPoint;
@@ -177,9 +182,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AGun> laserGunToSpawn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<AGun> baseGunRef;
+	TObjectPtr<ABaseGun> baseGunRef;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<AGun> laserGunRef;
+	TObjectPtr<ALaserGun> laserGunRef;
 
 #pragma endregion Spawn
 
@@ -322,6 +327,8 @@ public:
 
 	// Gun functions
 	void AttachGun(AGun* _gunToAttach, USceneComponent* _attachPoint);
-	
+	void AttachGun(ALaserGun* _gunToAttach, USceneComponent* _attachPoint);
+	void AttachGun(ABaseGun* _gunToAttach, USceneComponent* _attachPoint);
+	AGun* GetCurrentGun();
 
 };

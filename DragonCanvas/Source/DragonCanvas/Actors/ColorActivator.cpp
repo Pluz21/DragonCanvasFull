@@ -79,7 +79,7 @@ void AColorActivator::ManageOverlap(AActor* _overlapped, AActor* _overlap)
 
 	if (_overlap->IsA(APickUps::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlapping with %s"), *_overlap->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("Overlapping with %s"), *_overlap->GetName());
 		if(materialChecker->ActorMaterialCheck(_overlap))
 			{
 				GiveColor();

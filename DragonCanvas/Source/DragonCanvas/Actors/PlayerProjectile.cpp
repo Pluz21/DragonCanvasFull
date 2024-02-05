@@ -8,6 +8,7 @@
 #include "Enemy.h"
 #include "BossEnemy.h"
 #include "Gun.h"
+#include "BaseGun.h"
 
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -80,7 +81,7 @@ void APlayerProjectile::ManageOverlap(AActor* _overlapped, AActor* _overlap)
 
 	if (_overlap && (_overlap != this))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OVERLAPPING PROJECTILE WITH %s "), *_overlap->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("OVERLAPPING PROJECTILE WITH %s "), *_overlap->GetName());
 	}
 	else 
 		UE_LOG(LogTemp, Warning, TEXT("FAILED OVERLAPCALL"));

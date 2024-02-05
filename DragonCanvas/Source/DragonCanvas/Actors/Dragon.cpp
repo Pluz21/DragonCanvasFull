@@ -5,6 +5,7 @@
 
 #include "DragonCanvas/Components/MoveComponent.h"
 #include "ProjectileManager.h"
+#include "GunManager.h"
 #include "DragonCanvas/World/CustomGameMode.h"
 
 #include "PlayerProjectile.h"
@@ -95,6 +96,13 @@ void ADragon::InitManagers()
 	projectileManager = gameMode->GetProjectileManager();
 	if (!projectileManager)return;
 	//onCurrentProjectileMatReceived.AddDynamic(this, &ADragon::ScrollDownSelectProjectile);
+	gunManager = gameMode->GetGunManager();
+	if (!gunManager)
+	{
+		DebugText(TEXT("Failed to find Gun Manager "));
+
+	};
+
 
 	world = GetWorld();
 	playerController = GetWorld()->GetFirstPlayerController();
@@ -127,19 +135,16 @@ void ADragon::InitGuns()
 	if (!baseGunToSpawn)return;
 	AGun* _baseGun = GetWorld()->SpawnActor<AGun>(baseGunToSpawn);
 	if (!_baseGun)return;
-	baseGunRef = _baseGun;
+	baseGunRef = Cast<ABaseGun>(_baseGun);
 
 	if (!laserGunToSpawn)return;
 	AGun* _laserGun = GetWorld()->SpawnActor<AGun>(laserGunToSpawn);
 	if (!_laserGun)return;
-	laserGunRef = _laserGun;
+	laserGunRef = Cast<ALaserGun>(_laserGun);
 
-	AttachGun(baseGunRef, gunSpawnPoint);
+	AttachGun(baseGunRef, gunSpawnPoint);  //attaching the base gun at init
 
 }
-
-
-
 
 
 void ADragon::Move(const FInputActionValue& _value)
@@ -449,7 +454,7 @@ void ADragon::IncreaseAttackRateTime()
 {
 	if(!canAttack)
 	currentTimeAttackSpeed += GetWorld()->DeltaTimeSeconds;
-	UE_LOG(LogTemp, Warning, TEXT("currentTimeattackspeed =  %f"), currentTimeAttackSpeed);
+	//UE_LOG(LogTemp, Warning, TEXT("currentTimeattackspeed =  %f"), currentTimeAttackSpeed);
 
 	if (currentTimeAttackSpeed * attackSpeed/100 >= maxTimeAttackSpeed)
 	{
@@ -463,6 +468,32 @@ void ADragon::AttachGun(AGun* _gunToAttach, USceneComponent* _attachPoint)
 {
 	_gunToAttach->AttachToComponent(_attachPoint, FAttachmentTransformRules::KeepRelativeTransform);
 
+}
+
+void ADragon::AttachGun(ALaserGun* _gunToAttach, USceneComponent* _attachPoint)
+{
+	_gunToAttach->AttachToComponent(_attachPoint, FAttachmentTransformRules::KeepRelativeTransform);
+
+}
+
+void ADragon::AttachGun(ABaseGun* _gunToAttach, USceneComponent* _attachPoint)
+{
+	_gunToAttach->AttachToComponent(_attachPoint, FAttachmentTransformRules::KeepRelativeTransform);
+
+}
+
+AGun* ADragon::GetCurrentGun()
+{
+	if (!gunManager)
+	{
+
+	return nullptr;
+	}
+	//FString _string = gunManager->GetGun()->GetName();
+	//UE_LOG(LogTemp, Warning, TEXT("current gun is : %s"), *_string);
+
+	return gunManager->GetGun();
+	//return nullptr;
 }
 
 //Audio
